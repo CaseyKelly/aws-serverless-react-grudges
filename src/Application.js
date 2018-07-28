@@ -24,17 +24,21 @@ class Application extends Component {
   };
 
   removeGrudge = grudge => {
-    this.setState({
-      grudges: this.state.grudges.filter(other => other.id !== grudge.id),
-    });
+    API.del('grudgesCRUD', '/grudges/object/' + grudge.id).then(() => {
+      this.setState({
+        grudges: this.state.grudges.filter(other => other.id !== grudge.id),
+      });
+    })
   };
 
   toggle = grudge => {
-    const othergrudges = this.state.grudges.filter(
-      other => other.id !== grudge.id,
-    );
     const updatedGrudge = { ...grudge, avenged: !grudge.avenged };
-    this.setState({ grudges: [updatedGrudge, ...othergrudges] });
+    API.put('grudgesCRUD', '/grudges', { body: updatedGrudge }).then(() => {
+      const othergrudges = this.state.grudges.filter(
+        other => other.id !== grudge.id,
+      );
+      this.setState({ grudges: [updatedGrudge, ...othergrudges] });
+    })
   };
 
   render() {
